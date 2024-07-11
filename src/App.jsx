@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 import api from './api'
 
@@ -10,14 +8,16 @@ function App() {
 
   const weatherAPI = api;
 
-  const searched = () => {
-    fetch(`${weatherAPI.base}weather?q=${search}&units=metric&APPID=${weatherAPI.key}`)
-    .then(res => res.json())
-    .then(result => {
-      setWeather(result);
-      console.log(result)
-    })
+  const searched = async() =>{
+    const response = await fetch(`${weatherAPI.base}weather?q=${search}&units=metric&APPID=${weatherAPI.key}`);
+    const data = await response.json();
+    setWeather(data);
+    console.log(data)
   }
+
+  useEffect(() => {
+    searched();
+  },[])
   
 
   return (
@@ -31,10 +31,11 @@ function App() {
       </div>
       {/* Location */}
       <p>{weather.name}</p>
-      {/*  Temperature */}
-      <p>{weather.main.temp}°C</p>
-      {/* Condition */}
-      <p></p>
+     
+      <p>{weather.main.temp} °C</p>
+      
+      <p>{weather.weather[0].main}</p>
+      <p>{weather.weather[0].description}</p>
     </>
   )
 }
